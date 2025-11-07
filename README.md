@@ -74,3 +74,38 @@ void postOrder (Node* node){
     postOrder(node->right_son);
     cout<<node->value<<" ";
 }
+Node* searchSuccessor(Node* p) {
+    Node* ptr=p;
+    while ((ptr!=nullptr)&&(ptr->left_son!=nullptr)) {
+        ptr=ptr->left_son;
+    }
+    return ptr;
+}
+Node* Delete_Node(Node* ptr, int val) {
+    if (ptr == nullptr) {
+        return nullptr;
+    }
+    if (val < ptr->value) {
+        ptr->left_son = Delete_Node(ptr->left_son, val);
+    } else if (val > ptr->value) {
+        ptr->right_son = Delete_Node(ptr->right_son, val);
+    } else {
+        if (ptr->left_son == nullptr && ptr->right_son == nullptr) {
+            delete ptr;
+            return nullptr;
+        } else if (ptr->left_son == nullptr) {
+            Node* temp = ptr->right_son;
+            delete ptr;
+            return temp;
+        } else if (ptr->right_son == nullptr) {
+            Node* temp = ptr->left_son;
+            delete ptr;
+            return temp;
+        } else {
+            Node* ptr_succ = searchSuccessor(ptr->right_son);
+            ptr->value = ptr_succ->value;
+            ptr->right_son = Delete_Node(ptr->right_son, ptr_succ->value);
+        }
+    }
+    return ptr;
+}
